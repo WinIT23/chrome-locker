@@ -1,7 +1,6 @@
-console.log("Censoring texts!!!");
+console.log("Changing Links!!!");
 
-var paragraphs = document.getElementsByTagName('p');
-for (elt of paragraphs) {
-	elt.style['background-color'] = "black";
-	elt.style['color'] = "black";
+var links = document.getElementsByTagName("a");
+for (a of links) {
+	a.href = "#";
 }
