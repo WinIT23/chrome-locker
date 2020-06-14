@@ -2,16 +2,9 @@
     "manifest_version": 2,
     "name": "chrome locker",
     "version": "1.0.0",
-    "content_scripts": [
-		{
-	        "matches": [
-				"*://www.google.com/*",
-				"*://www.google.co.in/*",
-				"https://*.google.com/*"
-			],
-	        "js": [
-				"content.js"
-			]
-	    }
-	]
+	"background" : {
+		"scripts" : [
+			"background.js"
+		]
+	}
 }
