@@ -1,6 +1,14 @@
-var pass_msg = {
+var tries = 5;
+
+var promptType = {
+	"SET": 0,
+	"GET": 1
+}
+var promptMsg = {
 	"FIRST": "Set the password : ",
-	"CONFIRM": "Confirm Password : "
+	"CONFIRM": "Confirm Password : ",
+	"ENTRY": "Enter your password : ",
+	"RETRY": "(Wrong Password) Enter your Password (Attempts remaining : "
 }
 
 // for the first run after install.
@@ -18,6 +26,7 @@ chrome.runtime.onStartup.addListener(function () {
 
 // --------------------------- functions -----------------------------
 
+// show dialog box and change tab 
 function showLockScreen() {
 	// opens new page so one can't see your home-page..
 	var authPage = window.open("about:blank");
@@ -33,9 +42,9 @@ function showLockScreen() {
 }
 
 function setup() {
-	var pass = askPassword();
+	var pass = newPassword();
 
-// add encryption here in next version....
+	// add encryption here in next version....
 
 	// password is stored in a local file.
 	localStorage.setItem("passwd", pass);
@@ -44,22 +53,26 @@ function setup() {
 	closeBrowser();
 }
 
-function askPassword() {
-	var pass = setPassword(pass_msg.FIRST);
+function newPassword() {
+	var pass = passPrompt(promptMsg.FIRST, promptType.SET);
 	// empty strings are not allowed as password.
 	while (pass === "") {
-		console.log("Empty Password");
-		pass = setPassword(pass_msg.FIRST);
+		pass = passPrompt(promptMsg.FIRST, promptType.SET);
 	}
-	var cpass = setPassword(pass_msg.CONFIRM);
+	// confirm your password.
+	var cpass = passPrompt(promptMsg.CONFIRM, promptType.SET);
 
 	if (pass !== cpass) {
-		pass = askPassword();
-	} 
+		pass = newPassword();
+	}
 	return pass;
 }
 
-function setPassword(msg) {
+// gets the password and returns it.
+function passPrompt(msg, _type) {
+	if (msg === promptMsg.RETRY) {
+		msg = msg + tries + ")";
+	}
 	var pass = prompt(msg, "");
 	return pass.toString();
 }
@@ -75,7 +88,6 @@ function closeBrowser() {
 function closeMyTab() {
 	chrome.tabs.getAllInWindow(function (mTabs) {
 		for (var tab in mTabs) {
-			console.log(tab.url);
 			if (tab.url == "about:blank") {
 				chrome.tabs.remove(tab.id);
 				break;
@@ -84,40 +96,37 @@ function closeMyTab() {
 	});
 }
 
-function getPassword(str) {
-	var pass = prompt("Enter your password : " + str, "");
-	return pass;
-}
-
 function checkPassword(sPasswd) {
-	var retry_msg = "(Wrong Password) Tries remaining : ";
-	var tries = 5;
-
-
-	// while loop to decrease the count
-	var tPasswd = getPassword("");
+	var tPasswd = passPrompt(promptMsg.ENTRY, promptType.GET);
 
 	while (true) {
 
 		if (tries <= 0) {
 			tries = 0;
-			alert("closing Browser");
+			alert("Too Many Wrong Attempts. \nClosing Browser");
 			closeBrowser();
 			break;
 		}
 
 		if (sPasswd) {
-			tries -= 1;
 			if (tPasswd === sPasswd) {
-				console.log("Sucessful login !!!");
 				closeMyTab();
 				break;
 			} else {
-				tPasswd = getPassword(retry_msg + tries);
+				tPasswd = passPrompt(promptMsg.RETRY, promptType.GET);
 			}
+			tries -= 1;
 		} else {
 			setup();
 			break;
 		}
 	}
 }
+
+/* To-Do's 
+	1. hide the password.
+	2. add lock on demand (by clicking on icon).
+	3. add lock shortcut.
+	4. add option to change password
+	4. encrypt password
+*/
