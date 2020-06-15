@@ -1,3 +1,8 @@
+var pass_msg = {
+	"FIRST": "Set the password : ",
+	"CONFIRM": "Confirm Password : "
+}
+
 // for the first run after install.
 chrome.runtime.onInstalled.addListener(function (details) {
 	// if extension is a fresh install than ask for password
@@ -18,7 +23,7 @@ function showLockScreen() {
 	var authPage = window.open("about:blank");
 	// gets stored password
 	var sPasswd = localStorage.getItem("passwd");
-	
+
 	if (sPasswd) {
 		checkPassword(sPasswd);
 		authPage.close();
@@ -28,12 +33,7 @@ function showLockScreen() {
 }
 
 function setup() {
-	var pass = setPassword();
-	// empty strings are not allowed as password.
-	while (pass === "") {
-		console.log("Empty Password");
-		pass = setPassword();
-	}
+	var pass = askPassword();
 
 // add encryption here in next version....
 
@@ -44,8 +44,23 @@ function setup() {
 	closeBrowser();
 }
 
-function setPassword() {
-	var pass = prompt("Set the password : ", "");
+function askPassword() {
+	var pass = setPassword(pass_msg.FIRST);
+	// empty strings are not allowed as password.
+	while (pass === "") {
+		console.log("Empty Password");
+		pass = setPassword(pass_msg.FIRST);
+	}
+	var cpass = setPassword(pass_msg.CONFIRM);
+
+	if (pass !== cpass) {
+		pass = askPassword();
+	} 
+	return pass;
+}
+
+function setPassword(msg) {
+	var pass = prompt(msg, "");
 	return pass.toString();
 }
 
@@ -78,7 +93,7 @@ function checkPassword(sPasswd) {
 	var retry_msg = "(Wrong Password) Tries remaining : ";
 	var tries = 5;
 
-	
+
 	// while loop to decrease the count
 	var tPasswd = getPassword("");
 
@@ -90,7 +105,7 @@ function checkPassword(sPasswd) {
 			closeBrowser();
 			break;
 		}
-	
+
 		if (sPasswd) {
 			tries -= 1;
 			if (tPasswd === sPasswd) {
