@@ -29,6 +29,9 @@ chrome.commands.onCommand.addListener(function() {
 	showLockScreen();
 });
 
+chrome.browserAction.onClicked.addListener(function() {
+	showLockScreen();
+});
 // --------------------------- functions -----------------------------
 
 // show dialog box and change tab 
@@ -130,8 +133,6 @@ function checkPassword(sPasswd) {
 
 /* To-Do's 
 	1. hide the password.
-	2. add lock on demand (by clicking on icon).
-	3. add lock shortcut.
-	4. add option to change password
-	4. encrypt password
+	2. add option to change password
+	3. encrypt password
 */

@@ -30,6 +30,7 @@
 			"48": "ico48.png",
 			"64": "ico64.png",
 			"128": "ico128.png"	
-		}
+		},
+		"default_title": "Lock the screen"
 	}
 }
