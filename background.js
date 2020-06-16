@@ -24,6 +24,11 @@ chrome.runtime.onStartup.addListener(function () {
 	showLockScreen();
 });
 
+// shortcut added default - "Ctrl+Shift+L"
+chrome.commands.onCommand.addListener(function() {
+	showLockScreen();
+});
+
 // --------------------------- functions -----------------------------
 
 // show dialog box and change tab 

@@ -3,6 +3,16 @@
     "name": "chrome locker",
     "description": "Locks the chrome and ask for password everytime you open chrome",
 	"version": "1.0.0",
+	"commands": {
+		"toggle": {
+			"suggested_key": {
+				"default": "Ctrl+Shift+L",
+				"mac": "Command+Shift+L"
+			},
+		"description": "Locks the screen",
+		"global": false
+		}
+	},
 	"background": {
 		"scripts": [
 			"background.js"
