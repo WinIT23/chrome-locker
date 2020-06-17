@@ -11,30 +11,36 @@ var promptMsg = {
 	"RETRY": "(Wrong Password) Enter your Password (Attempts remaining : "
 }
 
-// for the first run after install.
-chrome.runtime.onInstalled.addListener(function (details) {
-	// if extension is a fresh install than ask for password
-	if (details.reason === "install") {
-		setup();
-	}
-});
+startup();
 
-// during every startup
-chrome.runtime.onStartup.addListener(function () {
-	showLockScreen();
-});
 
-// shortcut added default - "Ctrl+Shift+L"
-chrome.commands.onCommand.addListener(function() {
-	showLockScreen();
-});
+function startup() {
 
-chrome.browserAction.onClicked.addListener(function() {
-	showLockScreen();
-});
-// --------------------------- functions -----------------------------
+	// for the first run after install.
+	chrome.runtime.onInstalled.addListener(function(details) {
+		// if extension is a fresh install than ask for password
+		if (details.reason === "install") {
+			setup();
+		}
+	});
 
-// show dialog box and change tab 
+	// during every startup
+	chrome.runtime.onStartup.addListener(function() {
+		showLockScreen();
+	});
+
+	// shortcut added default - "Ctrl+Shift+L"
+	chrome.commands.onCommand.addListener(function() {
+		showLockScreen();
+	});
+
+	// locks the screen when clicked on icon
+	chrome.browserAction.onClicked.addListener(function() {
+		showLockScreen();
+	});
+}
+
+// show dialog box and change tab
 function showLockScreen() {
 	// opens new page so one can't see your home-page..
 	var authPage = window.open("about:blank");
@@ -86,7 +92,7 @@ function passPrompt(msg, _type) {
 }
 
 function closeBrowser() {
-	chrome.windows.getAll({}, function (window) {
+	chrome.windows.getAll({}, function(window) {
 		for (var tab of window) {
 			chrome.windows.remove(tab.id);
 		}
@@ -94,7 +100,7 @@ function closeBrowser() {
 }
 
 function closeMyTab() {
-	chrome.tabs.getAllInWindow(function (mTabs) {
+	chrome.tabs.getAllInWindow(function(mTabs) {
 		for (var tab in mTabs) {
 			if (tab.url == "about:blank") {
 				chrome.tabs.remove(tab.id);
@@ -131,8 +137,7 @@ function checkPassword(sPasswd) {
 	}
 }
 
-/* To-Do's 
+/* To-Do's
 	1. hide the password.
-	2. add option to change password
-	3. encrypt password
+	2. encrypt password
 */
